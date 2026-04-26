@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reyyan & Enes</title>
+    <!-- Şık yazı tipleri için Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* Gökyüzü arka plan rengi */
+            background: linear-gradient(135deg, #0f0c29, #302b63, #240b36);
+            background-attachment: fixed;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Uçuşan Kalplerin Alanı */
+        #hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none; /* Kalplerin tıklamayı engellememesi için */
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            bottom: -10vh;
+            animation: floatUp linear infinite;
+            opacity: 0.8;
+            text-shadow: 0 0 10px rgba(255, 77, 109, 0.5);
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-110vh) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* Başlangıç Giriş Ekranı */
+        #login-screen {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            z-index: 10; /* Kalplerin önünde durması için */
+            text-align: center;
+            padding: 20px;
+        }
+
+        #login-screen h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4rem;
+            color: #ff4d6d;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        }
+
+        #login-screen p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            max-width: 600px;
+        }
+
+        #password-input {
+            padding: 15px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 25px;
+            text-align: center;
+            width: 200px;
+            outline: none;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            background-color: #ff4d6d;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
+            position: relative;
+            z-index: 10;
+        }
+
+        button:hover {
+            background-color: #ff2a55;
+            transform: scale(1.05);
+        }
+
+        #error-msg {
+            color: #ffcccb;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* Ana İçerik ve Bölümler */
+        #main-content {
+            display: none;
+            position: relative;
+            z-index: 10; /* İçeriğin kalplerin önünde olması için */
+        }
+
+        .section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Cam Efektli Kutu Tasarımı */
+        .glass-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 800px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+
+        h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem;
+            color: #ffb6c1;
+            margin-bottom: 25px;
+        }
+
+        p.text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        /* Sayaç Tasarımı */
+        .counter-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .time-box {
+            background: rgba(255, 77, 109, 0.15);
+            padding: 20px;
+            border-radius: 15px;
+            min-width: 100px;
+            border: 1px solid rgba(255, 77, 109, 0.4);
+        }
+
+        .time-box span {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ff4d6d;
+        }
+
+        .time-box p {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .music-subtitle {
+            margin-top: 20px;
+            font-style: italic;
+            color: #ffb6c1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ARKA PLAN UÇUŞAN KALPLER -->
+    <div id="hearts-container"></div>
+
+    <!-- GİRİŞ EKRANI -->
+    <div id="login-screen">
+        <h1>Reyyan Ve Enes</h1>
+        <p>Bizim sitemize girmek istiyorsan seninle benim doğum günümüzün toplamını gir ❤️</p>
+        <input type="number" id="password-input" placeholder="Cevabın...">
+        <button onclick="checkPassword()">Giriş Yap</button>
+        <p id="error-msg">Yanlış cevap güzelim, tekrar dene bakalım :)</p>
+    </div>
+
+    <!-- ANA İÇERİK -->
+    <div id="main-content">
+        
+        <!-- BÖLÜM 1: İÇİMDEN GELENLER -->
+        <section id="section1" class="section">
+            <div class="glass-box">
+                <h2>İçimden Gelenler</h2>
+                <p class="text">
+                    11 Nisan günü... Seni iyi ki tanımışım, iyi ki benimlesin. Seni gerçekten çok seviyorum. Çişli olmana rağmen bu kadar kısa sürede sana çok bağlandım. <br><br>
+                    İlk kez birisi için bu kadar çabaladım, ilk kez birine bu kadar hızlı güvendim. "Ailemsin sen benim" diyecek kadar seviyorum seni. Bana bu duyguları yaşattığın için sana çok teşekkür ederim. ❤️
+                </p>
+                <button onclick="scrollToSection('section2')">Güzel dünyamızı görmeye devam etmek istersen tıkla</button>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 2: REYYAN'A ÖZEL -->
+        <section id="section2" class="section">
+            <div class="glass-box">
+                <h2>Reyyana Özel</h2>
+                <p class="text">
+                    Sen de izin verirsen ömrüm boyunca seninle olmak istiyorum. Kavgalarımız olur, dargınlıklarımız olur, küslükler olur, kıskançlıklar olur ama ne olursa olsun birbirimizi hiç bırakmayalım.<br><br>
+                    Sen benim için çok değerlisin, çok farklısın. Seni bırakmak istemiyorum, umarım hep benimle olursun. "Bu kadar kısa sürede nasıl sevdin bu kadar emin ol?" dersen... Gökyüzündeki yıldızlar kadar çok sebeplerim var seni sevmek için. Ola ki anlamazsan bana bakarken gözlerimin içine bak, o sana anlatacaktır.<br><br>
+                    Seni uykulu sesin kadar çok seviyorum 😊
+                </p>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 3: SAYAÇ -->
+        <section id="section3" class="section">
+            <div class="glass-box">
+                <h2>Beraber Geçirdiğimiz Süre</h2>
+                <p class="text">11 Nisan'dan beri geçen her saniye benim için çok kıymetli...</p>
+                <div class="counter-container">
+                    <div class="time-box">
+                        <span id="days">15</span>
+                        <p>Gün</p>
+                    </div>
+                    <div class="time-box">
+                        <span id="hours">00</span>
+                        <p>Saat</p>
+                    </div>
+                    <div class="time-box">
+                        <span id="minutes">00</span>
+                        <p>Dakika</p>
+                    </div>
+                    <div class="time-box">
+                        <span id="seconds">00</span>
+                        <p>Saniye</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 4: ŞARKI -->
+        <section id="section4" class="section">
+            <div class="glass-box">
+                <h2>Bizim Şarkımız</h2>
+                
+                <!-- ŞARKI LİNKİNİ BURAYA EKLEYECEKSİN -->
+                <audio id="myAudio" src="SENIN_SARKI_DOSYAN.mp3"></audio>
+                
+                <button id="playBtn" onclick="toggleAudio()">Dinleyelim mi? 🎵</button>
+                <p class="music-subtitle">Bu şarkıyı duyduğumda aklıma sen geldin. Hepsini dinlemeden geçme...</p>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 5: GÜZEL KIZ -->
+        <section id="section5" class="section">
+            <div class="glass-box">
+                <h2>Güzel Kız</h2>
+                <p class="text">
+                    Son olarak uzun zamandır uğraştığım emeğin sonuna geldik, inşallah beğenirsin. Kızacağın yerleri olursa da affet eşşeğini. Benimle olacaksan, benim olduğun zaman kadar seni mutlu etmek için çabalayacağım.<br><br>
+                    Bunu neden yaptığımı bilmiyorum, ilk kez aklım ve kalbim aynı anda bunu yap diyor ve ben de onu yapıyorum. Seni gerçekten çok seviyorum, iyi ki benimsin.<br><br>
+                    Hayatın gözlerin kadar güzel olması dileğiyle... Bana cevap yazmadan tiktok'taki repostlarıma bakmanı istiyorum. İyi Günler. ❤️
+                </p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- JAVASCRIPT KODLARI -->
+    <script>
+        // --- UÇUŞAN KALPLERİ OLUŞTURMA ---
+        function createHearts() {
+            const container = document.getElementById('hearts-container');
+            const heartCount = 40; 
+
+            for (let i = 0; i < heartCount; i++) {
+                let heart = document.createElement('div');
+                const colors = ['#ff4d6d', '#ff758f', '#ffb3c1', '#c9184a'];
+                let randomColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                heart.innerHTML = '❤';
+                heart.classList.add('heart');
+                heart.style.color = randomColor;
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 8 + 5) + 's'; 
+                heart.style.animationDelay = (Math.random() * 5) + 's';
+                heart.style.fontSize = (Math.random() * 1.5 + 0.8) + 'rem'; 
+                
+                container.appendChild(heart);
+            }
+        }
+        window.onload = createHearts;
+
+        // --- ŞİFRE KONTROLÜ ---
+        function checkPassword() {
+            var password = document.getElementById('password-input').value;
+            if (password === "42") {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                document.getElementById('section1').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                document.getElementById('error-msg').style.display = 'block';
+            }
+        }
+
+        // --- AŞAĞI KAYDIRMA ---
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- SAYAÇ ---
+        // Saat, dakika ve saniye 11 Nisan'a göre çalışacak.
+        const startDate = new Date("April 11, 2024 00:00:00").getTime();
+
+        setInterval(function() {
+            const now = new Date().getTime();
+            const distance = now - startDate;
+
+            // GÜN SAYISINI İSTEDİĞİN GİBİ 15 OLARAK SABİTLEDİM
+            const days = 15; 
+            
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerHTML = days;
+            document.getElementById("hours").innerHTML = hours < 10 ? "0" + hours : hours;
+            document.getElementById("minutes").innerHTML = minutes < 10 ? "0" + minutes : minutes;
+            document.getElementById("seconds").innerHTML = seconds < 10 ? "0" + seconds : seconds;
+        }, 1000);
+
+        // --- MÜZİK ÇALAR ---
+        var audio = document.getElementById("myAudio");
+        var isPlaying = false;
+
+        function toggleAudio() {
+            if (isPlaying) {
+                audio.pause();
+                document.getElementById("playBtn").innerHTML = "Dinleyelim mi? 🎵";
+            } else {
+                audio.play();
+                document.getElementById("playBtn").innerHTML = "Şarkıyı Durdur ⏸️";
+            }
+            isPlaying = !isPlaying;
+        }
+    </script>
+</body>
+</html>
